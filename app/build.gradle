@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.hcode91.pocketreel'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.hcode91.pocketreel'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '0.1'
+    }
+
+    signingConfigs {
+        // A fixed key checked into the repo, so every CI build installs over the last one.
+        shared {
+            storeFile file('pocketreel-debug.keystore')
+            storePassword 'android'
+            keyAlias 'pocketreel'
+            keyPassword 'android'
+        }
+    }
+
+    buildTypes {
+        debug { signingConfig signingConfigs.shared }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.shared
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = '17' }
+}
+
+dependencies {
+    implementation project(':core')
+}

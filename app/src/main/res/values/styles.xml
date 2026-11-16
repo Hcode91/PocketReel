@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PocketReel" parent="android:Theme.Material.NoActionBar">
+        <item name="android:colorPrimary">#FF2B1E4A</item>
+        <item name="android:colorPrimaryDark">#FF140D26</item>
+        <item name="android:colorAccent">#FFFFB13B</item>
+        <item name="android:windowBackground">@color/reel_bg</item>
+        <item name="android:statusBarColor">#FF140D26</item>
+        <item name="android:navigationBarColor">#FF140D26</item>
+    </style>
+    <style name="Theme.PocketReel.Fullscreen">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/reel_bg</item>
+    </style>
+</resources>
