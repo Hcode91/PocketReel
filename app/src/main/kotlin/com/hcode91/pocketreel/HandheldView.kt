@@ -168,6 +168,7 @@ class HandheldView(context: Context) : View(context) {
         }
 
         // Body
+        paint.color = Color.WHITE // a shader is drawn with the paint's alpha
         paint.shader = LinearGradient(0f, 0f, 0f, height.toFloat(), BODY_TOP, BODY_BOTTOM, Shader.TileMode.CLAMP)
         canvas.drawRoundRect(body, 40 * dp, 40 * dp, paint)
         paint.shader = null
@@ -221,6 +222,7 @@ class HandheldView(context: Context) : View(context) {
                 canvas.drawLine(xx, t, xx, t + h, paint)
             }
             // A soft glare across the panel.
+            paint.color = Color.WHITE // a shader is drawn with the paint's alpha
             paint.shader = LinearGradient(l, t, l + w * 0.6f, t + h, Color.argb(28, 255, 255, 255), Color.TRANSPARENT, Shader.TileMode.CLAMP)
             canvas.drawRect(pictureRect, paint)
             paint.shader = null
@@ -249,6 +251,7 @@ class HandheldView(context: Context) : View(context) {
     private fun drawDpad(canvas: Canvas) {
         val arm = dpadR * 0.36f
         // Base disc
+        paint.color = Color.WHITE
         paint.shader = RadialGradient(dpadX, dpadY, dpadR * 1.1f, Color.argb(90, 0, 0, 0), Color.TRANSPARENT, Shader.TileMode.CLAMP)
         canvas.drawCircle(dpadX, dpadY, dpadR * 1.1f, paint)
         paint.shader = null
@@ -296,7 +299,8 @@ class HandheldView(context: Context) : View(context) {
     private fun drawFace(canvas: Canvas, x: Float, y: Float, label: String, c: Control) {
         paint.color = Color.argb(80, 0, 0, 0)
         canvas.drawCircle(x, y + faceR * 0.08f, faceR, paint)
-        paint.shader = RadialGradient(x - faceR * 0.3f, y - faceR * 0.3f, faceR * 1.3f,
+            paint.color = Color.WHITE
+            paint.shader = RadialGradient(x - faceR * 0.3f, y - faceR * 0.3f, faceR * 1.3f,
             if (isDown(c)) ACCENT_DARK else ACCENT, ACCENT_DARK, Shader.TileMode.CLAMP)
         canvas.drawCircle(x, y, faceR * (if (isDown(c)) 0.94f else 1f), paint)
         paint.shader = null

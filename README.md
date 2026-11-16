@@ -21,6 +21,40 @@ discs the app can play. No disc content, logos or firmware are included.
 - Game controllers and keyboards work (D-pad, A/X = OK, B/Y = MENU, Start = pause, L1/R1 = skip,
   L2 = go back a scene, Select = track list).
 
+## Getting started
+
+**1. Install.** Download the APK from the latest build (GitHub **Actions** → *Build* → artifact
+`PocketReel-apk`) and open it on your phone. You may need to allow installs from your browser or
+file manager.
+
+**2. Add your discs.** Rip your discs on a PC with a CD drive (they are ordinary audio CDs to a
+drive; any ripper that writes `.cue` + `.bin` works. Use a tray drive: the discs are smaller than a
+normal CD and a slot-loading drive can't take them). Copy them to your phone, then tap
+**Library folder** and choose the folder that holds them. PocketReel lists every disc it finds,
+in sub-folders too, plus any `.zip` rips. To open just one disc, tap **Open files** and select
+the `.cue` together with its `.bin` files (or a single `.zip`).
+
+<img src="docs/screenshots/1-library.png" width="300" alt="The library screen listing three discs">
+
+**3. Play.** Tap a disc. It starts on the disc's first scene. On interactive XP discs the buttons
+the current scene responds to light up in blue: press one to choose. The track number shows
+briefly whenever the disc moves to a new scene.
+
+<img src="docs/screenshots/2-player-choice.png" width="300" alt="The player with four highlighted choice buttons">
+
+**4. The buttons along the bottom**, from left to right: previous track, play/pause, next track,
+**back a scene** (undo a wrong choice), **track list**, **settings**, and **full screen** (tap the
+picture to bring the controls back). Turn the phone sideways for the landscape layout.
+
+<img src="docs/screenshots/3-player-landscape.png" width="600" alt="The player in landscape">
+
+**Settings** lets you switch off the button highlights or the LCD effect, show the stored pixel
+grid instead of the true 4:3 shape, play every track in order (ignoring the disc's branching), or
+loop the disc.
+
+*The screenshots are rendered from the app's own code off-device; the picture on the screen is a
+placeholder drawing, not a real disc.*
+
 ## Supported rips
 
 - `.cue` + `.bin` (one file per track, or a single `.bin`)
@@ -46,7 +80,7 @@ The undo-arrow key steps back to the previous scene, which is handy after a wron
 ## Building
 
 GitHub Actions builds a debug APK on every push (see the **Actions** tab, artifact `PocketReel-apk`).
-Locally: `gradle :app:assembleDebug`. The `tools` module is a desktop test harness:
+Locally: `gradle :app:assembleDebug`. Screenshots: `gradle :app:testDebugUnitTest --tests '*Screenshots*'`. The `tools` module is a desktop test harness:
 
 ```
 gradle :tools:installDist
@@ -56,6 +90,20 @@ tools/build/install/tools/bin/tools run   "Disc.cue" out/ 60 46:1   # play 60 s,
 
 ## Credits
 
-The disc format and the player logic are ported from [vxp](https://github.com/zdiemer/vxp)
-(MIT), whose format notes build on [PVDTools](https://github.com/saramibreak/PVDTools) by saramibreak.
-See `NOTICE`.
+- **[vxp](https://github.com/zdiemer/vxp)** by the VideoNow XP Emulator contributors (MIT): the disc
+  format research, the picture decoder and the interactive player logic are ported from it. See
+  `NOTICE` for its licence.
+- **[PVDTools](https://github.com/saramibreak/PVDTools)** by saramibreak, and the VideoHelp forum
+  community, for the original work on the VideoNow disc format that vxp builds on.
+- **[Robolectric](https://robolectric.org)** (MIT) renders the tutorial screenshots in tests.
+
+## AI use
+
+PocketReel was built with heavy use of AI. Most of its code and documentation was written by
+Anthropic's Claude, working from my direction, testing and review. It has been tested against real
+disc rips, but it hasn't had the years of use that long-established software has, so please report
+anything that doesn't work.
+
+## Licence
+
+MIT, see `LICENSE`. Copyright (c) 2026 PocketReel contributors.
