@@ -107,3 +107,11 @@ anything that doesn't work.
 ## Licence
 
 MIT, see `LICENSE`. Copyright (c) 2026 PocketReel contributors.
+
+## Playing a disc from another app
+
+Launchers and trackers (such as BacklogQuest's home-screen tiles) can play a disc directly: send
+`com.hcode91.pocket.LAUNCH_GAME` to the app's launcher activity with the extra `game_id`, the
+disc's title as the library lists it (any case). A single disc file (`.zip`, `.bin` or `.wav`)
+can be passed as the intent's data instead; a `.cue` needs the library, because its `.bin` files
+sit next to it.

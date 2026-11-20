@@ -73,7 +73,52 @@ class MainActivity : Activity() {
         root.addView(list, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         setContentView(root)
 
+        // A disc asked for by another app is looked up once the library has been scanned.
+        pendingLaunch = if (savedInstanceState == null) intent else null
         rescan()
+    }
+
+    /** A launch request from another app, waiting for the library scan. */
+    private var pendingLaunch: Intent? = null
+
+    /** True while a disc opened for another app is loading: the menu closes once it plays. */
+    private var closeAfterLoad = false
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        pendingLaunch = intent
+        rescan()
+    }
+
+    /**
+     * The request another app (BacklogQuest's home-screen tiles) sends to play a disc straight away:
+     * extra "game_id", the disc's title as the library lists it, or a disc file as the intent's data.
+     */
+    private fun launchPending() {
+        val i = pendingLaunch ?: return
+        pendingLaunch = null
+        if (i.action != ACTION_LAUNCH_GAME) return
+        val wanted = i.getStringExtra("game_id")?.trim().orEmpty()
+        val file = i.data
+        when {
+            wanted.isNotEmpty() -> {
+                val e = entries.firstOrNull { it.title.equals(wanted, ignoreCase = true) }
+                if (e == null) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Disc not found")
+                        .setMessage("\"$wanted\" isn't in your library. The name must match the title shown in the list.")
+                        .setPositiveButton("OK", null)
+                        .show()
+                    return
+                }
+                closeAfterLoad = true
+                load(e.main, e.siblings)
+            }
+            file != null -> {
+                closeAfterLoad = true
+                load(Docs.describe(contentResolver, file), emptyList())
+            }
+        }
     }
 
     private fun pill(label: String, onClick: () -> Unit) = Button(this).apply {
@@ -132,6 +177,7 @@ class MainActivity : Activity() {
         val treeText = prefs.getString(KEY_TREE, null)
         if (treeText == null) {
             status.text = "Choose the folder that holds your disc rips (.cue + .bin, .zip, .bin or .wav), or open files directly."
+            launchPending()
             return
         }
         status.text = "Scanning library…"
@@ -146,6 +192,7 @@ class MainActivity : Activity() {
                 }.onFailure {
                     status.text = "Couldn't read the library folder. Pick it again. (${it.message})"
                 }
+                launchPending()
             }
         }
     }
@@ -166,7 +213,9 @@ class MainActivity : Activity() {
                 result.onSuccess { disc ->
                     DiscSession.replace(disc)
                     startActivity(Intent(this, PlayerActivity::class.java))
+                    if (closeAfterLoad) finish()
                 }.onFailure { e ->
+                    closeAfterLoad = false
                     val hint = if (mainFile.ext == "cue" && siblings.size <= 1)
                         "\n\nWhen opening a .cue, select its .bin files at the same time, or add the folder as your library."
                     else ""
@@ -202,6 +251,7 @@ class MainActivity : Activity() {
     }
 
     companion object {
+        const val ACTION_LAUNCH_GAME = "com.hcode91.pocket.LAUNCH_GAME"
         const val REQ_TREE = 1
         const val REQ_FILES = 2
         const val KEY_TREE = "library_tree"
